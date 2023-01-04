@@ -1,4 +1,4 @@
-package com.klid;
+package com.klid.rsaloader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +12,7 @@ import java.util.Base64;
 /**
  * @author Ivan Kaptue
  */
-public class RSAParserImpl implements RSAParser {
+public class RSALoaderImpl implements RSALoader {
 
     public static final String RSA = "RSA";
     public static final String BEGIN_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----";
@@ -22,13 +22,13 @@ public class RSAParserImpl implements RSAParser {
 
     private KeyFactory keyFactory;
 
-    public RSAParserImpl(KeyFactory keyFactory) {
+    public RSALoaderImpl(KeyFactory keyFactory) {
         setKeyFactory(keyFactory);
     }
 
     public void setKeyFactory(KeyFactory keyFactory) {
         if (!RSA.equals(keyFactory.getAlgorithm())) {
-            throw new RSAParserException("Algorithm must be RSA");
+            throw new RSALoaderException("Algorithm must be RSA");
         }
         this.keyFactory = keyFactory;
     }
@@ -42,7 +42,7 @@ public class RSAParserImpl implements RSAParser {
             var spec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(key.getBytes()));
             return (RSAPrivateKey) keyFactory.generatePrivate(spec);
         } catch (Exception ex) {
-            throw new RSAParserException("Error when parsing private key", ex);
+            throw new RSALoaderException("Error when parsing private key", ex);
         }
     }
 
@@ -55,7 +55,7 @@ public class RSAParserImpl implements RSAParser {
             var spec = new X509EncodedKeySpec(Base64.getDecoder().decode(key.getBytes()));
             return (RSAPublicKey) keyFactory.generatePublic(spec);
         } catch (Exception ex) {
-            throw new RSAParserException("Error when parsing public key", ex);
+            throw new RSALoaderException("Error when parsing public key", ex);
         }
     }
 }

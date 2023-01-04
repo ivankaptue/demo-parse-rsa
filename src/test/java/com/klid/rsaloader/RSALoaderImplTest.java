@@ -1,4 +1,4 @@
-package com.klid;
+package com.klid.rsaloader;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,26 +15,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 
-
 /**
  * @author Ivan Kaptue
  */
-class RSAParserImplTest {
+class RSALoaderImplTest {
 
     private static final String PRIVATE_KEY_FILE = "src/test/resources/private_key.pem";
     private static final String PUBLIC_KEY_FILE = "src/test/resources/public_key.pem";
 
-    private RSAParser parser;
+    private RSALoader parser;
 
     @BeforeEach
     public void beforeEach() throws NoSuchAlgorithmException {
-        parser = new RSAParserImpl(KeyFactory.getInstance("RSA"));
+        parser = new RSALoaderImpl(KeyFactory.getInstance("RSA"));
     }
 
     @Test
     public void testParsePrivateKeyError() {
         assertThatThrownBy(() -> parser.parsePrivateKey(anyString()))
-                .isInstanceOf(RSAParserException.class)
+                .isInstanceOf(RSALoaderException.class)
                 .hasMessage("Error when parsing private key");
     }
 
@@ -48,7 +47,7 @@ class RSAParserImplTest {
     @Test
     public void testParsePublicKeyError() {
         assertThatThrownBy(() -> parser.parsePublicKey(anyString()))
-                .isInstanceOf(RSAParserException.class)
+                .isInstanceOf(RSALoaderException.class)
                 .hasMessage("Error when parsing public key");
     }
 
@@ -61,14 +60,14 @@ class RSAParserImplTest {
 
     @Test
     public void testSetKeyFactoryNotRSA() {
-        assertThatThrownBy(() -> new RSAParserImpl(KeyFactory.getInstance("DSA")))
-                .isInstanceOf(RSAParserException.class)
+        assertThatThrownBy(() -> new RSALoaderImpl(KeyFactory.getInstance("DSA")))
+                .isInstanceOf(RSALoaderException.class)
                 .hasMessage("Algorithm must be RSA");
     }
 
     @Test
     public void testSetKeyFactoryRSA() {
-        Assertions.assertDoesNotThrow(() -> new RSAParserImpl(KeyFactory.getInstance("RSA")));
+        Assertions.assertDoesNotThrow(() -> new RSALoaderImpl(KeyFactory.getInstance("RSA")));
     }
 
     private String loadKeyFromFile(String filePath) {
